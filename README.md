@@ -1,3 +1,21 @@
+Henrik's comments:
+
+Don't pip install the requirements,the torch version doesn't work. Install the .yml file instead like so:
+
+    conda env create --f environment.yml
+
+Download the bioSR dataset from https://figshare.com/articles/dataset/BioSR/13264793 and extract it to dataset/
+
+run read_mrc.py to convert everything to .tif, put them in the correct folder structure and crop them to enable training.
+
+Start a training with the command 
+
+    python sr.py -p train -c config/sr_sr3_64_128_test.json
+
+This is just a first implementation that runs, nothing is optimized and there may be bugs. But it's a working start!
+
+Here's the original readme:
+
 # Image Super-Resolution via Iterative Refinement
 
 [Paper](https://arxiv.org/pdf/2104.07636.pdf ) |  [Project](https://iterative-refinement.github.io/ )
