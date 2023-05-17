@@ -4,7 +4,8 @@ from PIL import Image
 from torch.utils.data import Dataset
 import random
 import data.util as Util
-
+import tifffile as tiff
+import numpy as np
 
 class LRHRDataset(Dataset):
     def __init__(self, dataroot, datatype, l_resolution=16, r_resolution=128, split='train', data_len=-1, need_LR=False):
@@ -85,10 +86,16 @@ class LRHRDataset(Dataset):
                 if self.need_LR:
                     img_LR = Image.open(BytesIO(lr_img_bytes)).convert("RGB")
         else:
-            img_HR = Image.open(self.hr_path[index]).convert("RGB")
-            img_SR = Image.open(self.sr_path[index]).convert("RGB")
-            if self.need_LR:
-                img_LR = Image.open(self.lr_path[index]).convert("RGB")
+            if not self.hr_path[index].endswith("tif"):
+                img_HR = Image.open(self.hr_path[index]).convert("RGB")
+                img_SR = Image.open(self.sr_path[index]).convert("RGB")
+                if self.need_LR:
+                    img_LR = Image.open(self.lr_path[index]).convert("RGB")
+            else:
+                img_HR=tiff.imread(self.hr_path[index]).astype(np.float32)#[...,0:1]
+                img_SR = tiff.imread(self.sr_path[index]).astype(np.float32)#[...,0:1]
+                if self.need_LR:
+                    img_LR = tiff.imread(self.lr_path[index]).astype(np.float32)#[...,0:1]
         if self.need_LR:
             [img_LR, img_SR, img_HR] = Util.transform_augment(
                 [img_LR, img_SR, img_HR], split=self.split, min_max=(-1, 1))

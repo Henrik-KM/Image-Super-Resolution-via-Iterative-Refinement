@@ -5,7 +5,8 @@ import random
 import numpy as np
 
 IMG_EXTENSIONS = ['.jpg', '.JPG', '.jpeg', '.JPEG',
-                  '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP']
+                  '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP','tif']
+
 
 
 def is_image_file(filename):
@@ -20,6 +21,7 @@ def get_paths_from_images(path):
             if is_image_file(fname):
                 img_path = os.path.join(dirpath, fname)
                 images.append(img_path)
+            
     assert images, '{:s} has no valid image file'.format(path)
     return sorted(images)
 
@@ -73,6 +75,9 @@ def transform2tensor(img, min_max=(0, 1)):
 # implementation by torchvision, detail in https://github.com/Janspiry/Image-Super-Resolution-via-Iterative-Refinement/issues/14
 totensor = torchvision.transforms.ToTensor()
 hflip = torchvision.transforms.RandomHorizontalFlip()
+#crop = torchvision.transforms.RandomCrop(64)
+#vflip = torchvision.transforms.RandomVerticalFlip()
+#rot90 = torchvision.transforms.RandomRotation(90)
 def transform_augment(img_list, split='val', min_max=(0, 1)):    
     imgs = [totensor(img) for img in img_list]
     if split == 'train':
